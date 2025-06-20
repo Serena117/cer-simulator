@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>CER & PNRR Simulators</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            /* === STILI CODICE PRINCIPALE === */
+            :root {
+                --pg: #22c55e;
+                --sg: #16a34a;
+                --lg: #dcfce7;
+                --pb: #3b82f6;
+                --lb: #dbeafe;
+                --dt: #1f2937;
+                --lt: #6b7280;
+                --bgl: #f8fafc;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box
+            }
+
+            body {
+                font-family: 'Inter',sans-serif;
+                line-height: 1.6;
+                color: var(--dt)
+            }
+
+            .navbar {
+                background: rgba(255,255,255,0.95);
+                backdrop-filter: blur(10px);
+                box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+                transition: all .3s
+            }
+
+            .navbar.scrolled {
+                background: rgba(255,255,255,0.98);
+                box-shadow: 0 2px 30px rgba(0,0,0,0.15)
+            }
+
+            .navbar-brand {
+                font-weight: 700;
+                font-size: 1.5rem;
+                color: var(--pg)!important
+            }
+
+            .navbar-nav .nav-link {
+                font-weight: 500;
+                color: var(--dt)!important;
+                margin: 0 10px;
+                transition: .3s
+            }
+
+            .navbar-nav .nav-link:hover {
+                color: var(--pg)!important;
+                transform: translateY(-2px)
+            }
+
+            .hero {
+                background: linear-gradient(135deg,var(--lg),var(--lb));
+                padding: 120px 0 80px;
+                position: relative;
+                overflow: hidden
+            }
+
+            .hero::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle,rgba(34,197,94,.1) 0%,transparent 70%);
+                animation: float 20s ease-in-out infinite
+            }
+
+            @keyframes float {
+                0%,100% {
+                    transform: translate(-50%,-50%) rotate(0deg)
+                }
+
+                50% {
+                    transform: translate(-50%,-50%) rotate(180deg)
+                }
+            }
+
+            .hero-content {
+                position: relative;
+                z-index: 2
+            }
+
+            .hero h1 {
+                font-size: 3.5rem;
+                font-weight: 700;
+                color: var(--dt);
+                margin-bottom: 1.5rem;
+                line-height: 1.2
+            }
+
+            .hero .lead {
+                font-size: 1.25rem;
+                color: var(--lt);
+                margin-bottom: 2.5rem;
+                max-width: 600px
+            }
+
+            .btn-primary-custom {
+                background: linear-gradient(45deg,var(--pg),var(--sg));
+                border: none;
+                padding: 15px 35px;
+                font-size: 1.1rem;
+                font-weight: 600;
+                border-radius: 50px;
+                color: #fff;
+                text-decoration: none;
+                transition: .3s;
+                box-shadow: 0 4px 15px rgba(34,197,94,.3)
+            }
+
+            .btn-primary-custom:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 8px 25px rgba(34,197,94,.4);
+                color: #fff
+            }
+
+            .info-section {
+                padding: 80px 0;
+                background: #fff
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 3rem;
+                color: var(--dt)
+            }
+
+            .info-card {
+                background: #fff;
+                padding: 40px;
+                border-radius: 20px;
+                box-shadow: 0 10px 40px rgba(0,0,0,.1);
+                margin-bottom: 30px;
+                transition: .3s;
+                border: 1px solid #f1f5f9
+            }
+
+            .info-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 60px rgba(0,0,0,.15)
+            }
+
+            .info-icon {
+                width: 70px;
+                height: 70px;
+                background: linear-gradient(45deg,var(--pg),var(--pb));
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 25px;
+                color: #fff;
+                font-size: 1.8rem
+            }
+
+            .normativa-alert {
+                background: linear-gradient(135deg,#fef3c7,#fde68a);
+                border: 2px solid #f59e0b;
+                border-radius: 15px;
+                padding: 30px;
+                margin: 60px 0;
+                position: relative;
+                overflow: hidden
+            }
+
+            .normativa-alert::before {
+                content: '⚖️';
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                font-size: 4rem;
+                opacity: 0.1
+            }
+
+            .normativa-alert h4,.normativa-alert p {
+                color: #92400e
+            }
+
+            .normativa-alert h4 {
+                font-weight: 700;
+                margin-bottom: 15px
+            }
+
+            .normativa-alert p {
+                margin: 0;
+                font-weight: 500
+            }
+
+            .benefits-section {
+                padding: 80px 0;
+                background: var(--bgl)
+            }
+
+            .benefit-item {
+                text-align: center;
+                padding: 30px 20px;
+                background: #fff;
+                border-radius: 15px;
+                margin-bottom: 30px;
+                transition: .3s;
+                box-shadow: 0 5px 20px rgba(0,0,0,.08)
+            }
+
+            .benefit-item:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0,0,0,.12)
+            }
+
+            .benefit-icon {
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(45deg,var(--lg),var(--lb));
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 20px;
+                font-size: 2rem;
+                color: var(--pg)
+            }
+
+            .footer {
+                background: var(--dt);
+                color: #fff;
+                padding: 60px 0 30px
+            }
+
+            .footer h5 {
+                color: var(--pg);
+                margin-bottom: 20px
+            }
+
+            .footer a {
+                color: #d1d5db;
+                text-decoration: none;
+                transition: .3s
+            }
+
+            .footer a:hover {
+                color: var(--pg)
+            }
+
+            .footer-bottom {
+                border-top: 1px solid #374151;
+                margin-top: 40px;
+                padding-top: 20px;
+                text-align: center;
+                color: #9ca3af
+            }
+
+            @media(max-width: 768px) {
+                .hero h1 {
+                    font-size:2.5rem
+                }
+
+                .hero .lead {
+                    font-size: 1.1rem
+                }
+
+                .section-title {
+                    font-size: 2rem
+                }
+
+                .info-card {
+                    padding: 30px
+                }
+            }
+
+            html {
+                scroll-behavior: smooth
+            }
+
+            .fade-in {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: .6s
+            }
+
+            .fade-in.visible {
+                opacity: 1;
+                transform: translateY(0)
+            }
+
+            /* === STILI CODICE SECONDARIO (PNRR Calculator) === */
+            :root {
+                --primary: #2563eb;
+                --success: #16a34a;
+                --error: #dc2626;
+                --radius: 8px;
+                --space: 1rem
+            }
+
+            /* Stili rimossi da .pnrr-calculator per integrarlo meglio nella card esistente */
+            .pnrr-calculator {
+                font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+                max-width: 100%;
+            }
+
+            .pnrr-calculator .form-group {
+                margin-bottom: var(--space)
+            }
+
+            .pnrr-calculator .form-label {
+                display: block;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+                color: #374151
+            }
+
+            /* Usa form-control di Bootstrap per coerenza, ma mantiene stili specifici se necessario */
+            .pnrr-calculator .form-input {
+                width: 100%;
+                padding: 0.75rem;
+                border: 1px solid #ced4da;
+                border-radius: .375rem;
+                font-size: 1rem;
+                transition: border-color 0.2s
+            }
+
+            .pnrr-calculator .form-input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+            }
+
+            .pnrr-calculator .questions-grid {
+                display: grid;
+                gap: 0.75rem;
+                margin: var(--space) 0
+            }
+
+            .pnrr-calculator .question-item {
+                display: flex;
+                align-items: center;
+                padding: 0.75rem;
+                background: #f9fafb;
+                border-radius: var(--radius);
+                border: 1px solid #e5e7eb
+            }
+
+            .pnrr-calculator .question-text {
+                flex: 1;
+                font-size: 0.9rem;
+                color: #374151
+            }
+
+            .pnrr-calculator .question-select {
+                margin-left: 1rem;
+                padding: 0.5rem;
+                border: 1px solid #d1d5db;
+                border-radius: 4px;
+                background: white
+            }
+
+            .pnrr-calculator .calculate-btn {
+                width: 100%;
+                padding: 1rem;
+                background: var(--primary);
+                color: white;
+                border: none;
+                border-radius: var(--radius);
+                font-size: 1.1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background-color 0.2s
+            }
+
+            .pnrr-calculator .calculate-btn:hover {
+                background: #1d4ed8
+            }
+
+            .pnrr-calculator .result-container {
+                margin-top: var(--space);
+                padding: var(--space);
+                border-radius: var(--radius);
+                display: none
+            }
+
+            .pnrr-calculator .result-success {
+                background: #f0fdf4;
+                border: 1px solid #16a34a;
+                color: #166534
+            }
+
+            .pnrr-calculator .result-error {
+                background: #fef2f2;
+                border: 1px solid #dc2626;
+                color: #991b1b
+            }
+
+            .pnrr-calculator .result-value {
+                font-size: 1.5rem;
+                font-weight: bold;
+                margin: 0.5rem 0
+            }
+
+            .pnrr-calculator .details-toggle {
+                background: none;
+                border: none;
+                color: var(--primary);
+                cursor: pointer;
+                text-decoration: underline;
+                font-size: 0.9rem;
+                margin-top: 0.5rem
+            }
+
+            .pnrr-calculator .calculation-details {
+                margin-top: 1rem;
+                padding: 1rem;
+                background: #f8fafc;
+                border-radius: 4px;
+                font-size: 0.9rem;
+                display: none
+            }
+
+            .pnrr-calculator .detail-line {
+                display: flex;
+                justify-content: space-between;
+                margin: 0.25rem 0
+            }
+
+            /* === NUOVI STILI PER I TABS === */
+            .simulator-tabs {
+                background-color: #f1f5f9;
+                border-radius: 12px;
+                padding: 5px;
+                display: inline-flex;
+                margin-bottom: 2rem;
+            }
+
+            .simulator-tabs .nav-link {
+                border: none;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                border-radius: 8px !important;
+                padding: 10px 20px;
+            }
+
+            .simulator-tabs .nav-link i {
+                margin-right: 8px;
+            }
+
+            .simulator-tabs .nav-link.active {
+                background-color: #fff !important;
+                color: var(--pg) !important;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            }
+
+            .simulator-tabs .nav-link:not(.active) {
+                color: var(--lt);
+            }
+
+            .simulator-tabs .nav-link:not(.active):hover {
+                color: var(--dt);
+            }
+
+            .tab-content {
+                padding-top: 1rem;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="#home">
+                    <i class="fas fa-solar-panel me-2"></i>
+                    CER Simulator
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#simulatore">Simulatore</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#come-funziona">Come funziona</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#vantaggi">Vantaggi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#contatti">Contatti</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 hero-content">
+                        <h1 class="fade-in">Calcola gli incentivi per le Comunità Energetiche Rinnovabili</h1>
+                        <p class="lead fade-in">Simula i benefici economici della tua CER e i contributi PNRR con i nostri strumenti professionali, sempre aggiornati alla normativa vigente.</p>
+                        <a href="#simulatore" class="btn btn-primary-custom fade-in">
+                            <i class="fas fa-calculator me-2"></i>
+                            Prova i Simulatori
+                        </a>
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        <div class="fade-in">
+                            <i class="fas fa-chart-line" style="font-size: 15rem; color: var(--primary-green); opacity: 0.1;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Simulator Section -->
+        <section id="simulatore" class="info-section">
+            <div class="container">
+                <h2 class="section-title fade-in">Simula i tuoi Incentivi</h2>
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="info-card fade-in">
+                            <div class="text-center">
+                                <div class="info-icon mx-auto">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                                <p class="lead">Inserisci i dati del tuo impianto per ottenere una stima precisa degli incentivi economici</p>
+                                <!-- Tabs Navigation -->
+                                <div class="nav nav-pills simulator-tabs" id="pills-tab" role="tablist">
+                                    <button class="nav-link active" id="pills-cer-tab" data-bs-toggle="pill" data-bs-target="#pills-cer" type="button" role="tab" aria-controls="pills-cer" aria-selected="true">
+                                        <i class="fas fa-coins"></i>
+                                        Incentivi CER
+                                
+                                    </button>
+                                    <button class="nav-link" id="pills-pnrr-tab" data-bs-toggle="pill" data-bs-target="#pills-pnrr" type="button" role="tab" aria-controls="pills-pnrr" aria-selected="false">
+                                        <i class="fas fa-euro-sign"></i>
+                                        Contributi PNRR
+                                
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Tabs Content -->
+                            <div class="tab-content" id="pills-tabContent">
+                                <!-- CER Calculator Tab Pane -->
+                                <div class="tab-pane fade show active" id="pills-cer" role="tabpanel" aria-labelledby="pills-cer-tab">
+                                    <div id="simulatorForm">
+                                        <div id="warningBox" class="alert alert-warning" style="display: none;">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>
+                                            Gli impianti realizzati prima del 15 dicembre 2021 possono far parte di una comunità energetica, ma solo se la loro potenza non supera il 30% del totale degli impianti della comunità.
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="dataInstallazione" class="form-label">Data installazione impianto:</label>
+                                                <input type="date" class="form-control" id="dataInstallazione"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="potenza" class="form-label">Potenza impianto (kW):</label>
+                                                <input type="number" class="form-control" id="potenza" step="0.01" placeholder="Es. 6"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="prezzo" class="form-label">Prezzo Zonale (€/MWh):</label>
+                                                <input type="number" class="form-control" id="prezzo" step="0.01" placeholder="Es. 130.42"/>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="area" class="form-label">Area Geografica:</label>
+                                                <select class="form-select" id="area">
+                                                    <option value="Sud">Sud e Isole</option>
+                                                    <option value="Centro">Centro Italia</option>
+                                                    <option value="Nord">Nord Italia</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="condivisa" class="form-label">Energia condivisa in un'ora (kWh):</label>
+                                                <input type="number" class="form-control" id="condivisa" step="1" placeholder="Es. 200"/>
+                                            </div>
+                                        </div>
+                                        <div class="text-center">
+                                            <button class="btn btn-primary-custom" onclick="calcola()">
+                                                <i class="fas fa-calculator me-2"></i>
+                                                Calcola Incentivi
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="simulatorResults" style="display: none;" class="mt-4">
+                                        <div class="alert alert-success">
+                                            <h5>
+                                                <i class="fas fa-check-circle me-2"></i>
+                                                Risultati del Calcolo
+                                            </h5>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card border-success">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title text-success">
+                                                            <i class="fas fa-trophy me-2"></i>
+                                                            Tariffa Premio
+                                                        </h6>
+                                                        <h4 class="text-success" id="premioDisplay">€ 0.00</h4>
+                                                        <button class="btn btn-sm btn-outline-success" onclick="toggleDetails('dettagliPremio')">
+                                                            <i class="fas fa-info-circle me-1"></i>
+                                                            Dettagli
+                                                        </button>
+                                                        <div id="dettagliPremio" class="mt-2" style="display: none;">
+                                                            <small>
+                                                                <strong>Tariffa Fissa:</strong>
+                                                                <span id="fissaDisplay"></span>
+                                                                €/MWh<br>
+                                                                <strong>Tariffa Variabile:</strong>
+                                                                <span id="variabileDisplay"></span>
+                                                                €/MWh<br>
+                                                                <strong>Maggiorazione Geografica:</strong>
+                                                                <span id="geoDisplay"></span>
+                                                                €/MWh<br>
+                                                                <strong>Tariffa Finale:</strong>
+                                                                <span id="finaleDisplay"></span>
+                                                                €/MWh
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card border-primary">
+                                                    <div class="card-body">
+                                                        <h6 class="card-title text-primary">
+                                                            <i class="fas fa-coins me-2"></i>
+                                                            Contributo Valorizzazione
+                                                        </h6>
+                                                        <h4 class="text-primary" id="valorizzazioneDisplay">€ 0.00</h4>
+                                                        <button class="btn btn-sm btn-outline-primary" onclick="toggleDetails('dettagliValorizzazione')">
+                                                            <i class="fas fa-info-circle me-1"></i>
+                                                            Dettagli
+                                                        </button>
+                                                        <div id="dettagliValorizzazione" class="mt-2" style="display: none;">
+                                                            <small>
+                                                                <strong>Tariffa di trasmissione:</strong>
+                                                                <span id="trasmDisplay"></span>
+                                                                €<br>
+                                                                <strong>Tariffa di distribuzione:</strong>
+                                                                <span id="distDisplay"></span>
+                                                                €<br>
+                                                                <strong>Perdite dirette evitate:</strong>
+                                                                <span id="perditeDisplay"></span>
+                                                                €
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="alert alert-info text-center">
+                                            <h5>
+                                                <i class="fas fa-hand-holding-usd me-2"></i>
+                                                Totale Beneficio Economico
+                                            </h5>
+                                            <h3 class="text-primary mb-0" id="totaleDisplay">€ 0.00</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- PNRR Calculator Tab Pane -->
+                                <div class="tab-pane fade" id="pills-pnrr" role="tabpanel" aria-labelledby="pills-pnrr-tab">
+                                    <div class="pnrr-calculator">
+                                        <div class="form-group">
+                                            <label class="form-label">Potenza impianto (kW)</label>
+                                            <input type="number" id="power" class="form-control" min="1" max="1000" value="6" step="0.01">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Spesa sostenuta (€)</label>
+                                            <input type="number" id="expense" class="form-control" min="0" value="60000" step="0.01">
+                                        </div>
+                                        <div class="questions-grid" id="questionsContainer"></div>
+                                        <div class="text-center">
+                                            <button class="btn btn-primary-custom" onclick="calc()">
+                                                <i class="fas fa-calculator me-2"></i>
+                                                Calcola Contributo
+                                            </button>
+                                        </div>
+                                        <div id="resultContainer" class="result-container">
+                                            <div id="resultContent"></div>
+                                            <button class="details-toggle" id="detailsToggle" onclick="toggle()">Mostra dettagli calcolo</button>
+                                            <div id="calculationDetails" class="calculation-details"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Info Section -->
+        <section id="come-funziona" class="benefits-section">
+            <div class="container">
+                <h2 class="section-title fade-in">Cosa sono le Comunità Energetiche Rinnovabili?</h2>
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="info-card fade-in">
+                            <div class="info-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4>CER</h4>
+                            <p>Le CER sono associazioni di cittadini, imprese e enti locali che producono, consumano e condividono energia rinnovabile per ridurre i costi energetici e l'impatto ambientale.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="info-card fade-in">
+                            <div class="info-icon">
+                                <i class="fas fa-euro-sign"></i>
+                            </div>
+                            <h4>Incentivi Economici</h4>
+                            <p>Attraverso l'utilizzo di fonti rinnovabili è possibile ricevere tariffe premio e contributi di valorizzazione per l'energia condivisa, rendendo conveniente l'investimento nelle rinnovabili.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 mb-4">
+                        <div class="benefit-item fade-in">
+                            <div class="benefit-icon">
+                                <i class="fas fa-solar-panel"></i>
+                            </div>
+                            <h5>Produzione Condivisa</h5>
+                            <p>Impianti fotovoltaici che producono energia per tutta la comunità</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="benefit-item fade-in">
+                            <div class="benefit-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <h5>Autoconsumo Collettivo</h5>
+                            <p>Condivisione intelligente dell'energia tra i membri della comunità</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <div class="benefit-item fade-in">
+                            <div class="benefit-icon">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <h5>Sostenibilità</h5>
+                            <p>Riduzione dell'impatto ambientale e delle emissioni di CO₂</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="normativa-alert fade-in">
+                    <h4>
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Normativa Impianti installati prima del 15/12/2021
+                    </h4>
+                    <p>Gli impianti realizzati prima del 15 dicembre 2021 possono far parte di una comunità energetica, ma solo se la loro potenza non supera il 30% del totale degli impianti della comunità.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Benefits Section -->
+        <section id="vantaggi" class="info-section">
+            <div class="container">
+                <h2 class="section-title fade-in">Perché usare i nostri Simulatori?</h2>
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="benefit-item fade-in">
+                            <div class="benefit-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h5>Precisione e affidabilità</h5>
+                            <p>Aggiornati alla normativa vigente</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="benefit-item fade-in">
+                            <div class="benefit-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h5>Risultati immediati</h5>
+                            <p>Stima dettagliata, senza attese.</p>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="benefit-item fade-in">
+                            <div class="benefit-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <h5>Accessibilità</h5>
+                            <p>Facilmente accessibile da qualsiasi dispositivo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Footer -->
+        <footer id="contatti" class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 mb-4">
+                        <h5>
+                            <i class="fas fa-solar-panel me-2"></i>
+                            CER Simulator
+                        </h5>
+                        <p>La piattaforma professionale per il calcolo degli incentivi delle Comunità Energetiche Rinnovabili.</p>
+                        <div class="social-links">
+                            <a href="https://www.linkedin.com/company/janussrl/" target="_blank" class="me-3">
+                                <i class="fab fa-linkedin fa-2x"></i>
+                            </a>
+                            <a href="https://www.instagram.com/janus_tech/" target="_blank" class="me-3">
+                                <i class="fab fa-instagram fa-2x"></i>
+                            </a>
+                            <a href="https://www.facebook.com/janussrl/" target="_blank">
+                                <i class="fab fa-facebook fa-2x"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <h5>Link Utili</h5>
+                        <ul style="padding-left: 18px; font-size: 14px;">
+                            <li>
+                                <a href="https://www.gse.it/servizi-per-te/autoconsumo/gruppi-di-autoconsumatori-e-comunita-di-energia-rinnovabile/comunit%C3%A0-energetiche-rinnovabili" target="_blank">GSE – Comunità Energetiche Rinnovabili</a>
+                            </li>
+                            <li>
+                                <a href="https://www.mase.gov.it/portale/home" target="_blank">MASE – Ministero dell’Ambiente e della Sicurezza Energetica</a>
+                            </li>
+                            <li>
+                                <a href="https://www.arera.it/" target="_blank">ARERA – Autorità di Regolazione per Energia Reti e Ambiente</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-lg-4 mb-4">
+                        <h5>Sedi</h5>
+                        <p>
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Via G. Calà Ulloa 38 - 80141 Napoli
+                        </p>
+                        <p>
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Corso N. Protopisani 50 - 80146 Napoli
+                        </p>
+                        <p>
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Via S. Benedetto da Norcia - 82021 Apice
+                        </p>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy;2025 CER Simulator. Tutti i diritti riservati. | Sviluppato per supportare la transizione energetica italiana.</p>
+                </div>
+            </div>
+        </footer>
+        <!-- Bootstrap JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // === SCRIPT CODICE PRINCIPALE ===
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href'))?.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            }
+            );
+
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50)
+                    navbar.classList.add('scrolled');
+                else
+                    navbar.classList.remove('scrolled');
+            });
+
+            const observer = new IntersectionObserver( (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting)
+                        entry.target.classList.add('visible');
+                }
+                );
+            }
+            ,{
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+            window.addEventListener('load', () => setTimeout( () => {
+                document.querySelectorAll('.hero .fade-in').forEach( (el, index) => setTimeout( () => el.classList.add('visible'), index * 200));
+            }
+            , 300));
+
+            function toggleDetails(detailId) {
+                const element = document.getElementById(detailId);
+                element.style.display = (element.style.display === 'none' || element.style.display === '') ? 'block' : 'none';
+            }
+
+            function calcola() {
+                const dataInstallazione = document.getElementById('dataInstallazione').value;
+                const potenza = parseFloat(document.getElementById('potenza').value);
+                const prezzo = parseFloat(document.getElementById('prezzo').value);
+                const area = document.getElementById('area').value;
+                const condivisa = parseFloat(document.getElementById('condivisa').value);
+
+                if (!dataInstallazione || isNaN(potenza) || isNaN(prezzo) || isNaN(condivisa)) {
+                    alert("Compila tutti i campi correttamente.");
+                    return;
+                }
+
+                document.getElementById("warningBox").style.display = new Date(dataInstallazione) < new Date('2021-12-15') ? "block" : "none";
+
+                let fissa_base, max_totale;
+                if (potenza <= 200) {
+                    fissa_base = 80;
+                    max_totale = {
+                        Sud: 120,
+                        Centro: 124,
+                        Nord: 130
+                    }[area];
+                } else if (potenza <= 600) {
+                    fissa_base = 70;
+                    max_totale = {
+                        Sud: 110,
+                        Centro: 114,
+                        Nord: 120
+                    }[area];
+                } else {
+                    fissa_base = 60;
+                    max_totale = {
+                        Sud: 100,
+                        Centro: 104,
+                        Nord: 110
+                    }[area];
+                }
+
+                const maggiorazione = {
+                    Sud: 0,
+                    Centro: 4,
+                    Nord: 10
+                }[area];
+                const tariffaFissa = fissa_base + maggiorazione;
+                let variabile = Math.min(Math.max(0, 180 - prezzo), 40);
+                let premioFinale = Math.min(tariffaFissa + variabile, max_totale);
+                let premioEuro = (premioFinale / 1000) * condivisa;
+                const totaleValorizzazione = (11.89 / 1000) * condivisa;
+                const totaleBeneficio = premioEuro + totaleValorizzazione;
+
+                document.getElementById("premioDisplay").textContent = `€ ${premioEuro.toFixed(2)}`;
+                document.getElementById("fissaDisplay").textContent = tariffaFissa.toFixed(2);
+                document.getElementById("variabileDisplay").textContent = variabile.toFixed(2);
+                document.getElementById("geoDisplay").textContent = maggiorazione.toFixed(2);
+                document.getElementById("finaleDisplay").textContent = premioFinale.toFixed(2);
+                document.getElementById("valorizzazioneDisplay").textContent = `€ ${totaleValorizzazione.toFixed(2)}`;
+                document.getElementById("trasmDisplay").textContent = ((11.89 / 1000) * condivisa).toFixed(2);
+                document.getElementById("distDisplay").textContent = (0).toFixed(2);
+                document.getElementById("perditeDisplay").textContent = (0).toFixed(2);
+                document.getElementById("totaleDisplay").textContent = `€ ${totaleBeneficio.toFixed(2)}`;
+                document.getElementById("simulatorResults").style.display = "block";
+                document.getElementById("simulatorResults").scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest'
+                });
+            }
+
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    const navbarCollapse = document.querySelector('.navbar-collapse.show');
+                    if (navbarCollapse)
+                        bootstrap.Collapse.getInstance(navbarCollapse).hide();
+                }
+                );
+            }
+            );
+
+            // === SCRIPT CODICE SECONDARIO (PNRR Calculator) ===
+            const q = [
+  "La potenza dell’impianto è non superiore a 1 MW?",
+  "L’impianto dispone del titolo abilitativo alla costruzione e all’esercizio, ove previsto?",
+  "L’impianto dispone del preventivo di connessione alla rete elettrica accettato in via definitiva, ove previsto?",
+  "L’impianto è ubicato in un Comune con popolazione inferiore a 5.000 abitanti (secondo i dati ISTAT alla data di invio della richiesta)?",
+  "L’impianto è ubicato nell’area sottesa alla stessa cabina primaria della configurazione CER o del gruppo di autoconsumatori in cui sarà inserito?",
+  "La data di avvio lavori è successiva alla data di presentazione della domanda di contributo?",
+  "L’impianto entrerà in esercizio entro 18 mesi dalla data di ammissione al contributo e comunque non oltre il 30/06/2026?",
+  "L’impianto rispetta i requisiti previsti per gli impianti di produzione indicati nelle Regole, incluso il principio DNSH e il tagging climatico?",
+  "Una volta realizzato, l’impianto sarà inserito in una configurazione di gruppo di autoconsumatori o di CER con contratto di incentivazione attivo con il GSE?"
+]
+;
+            const t = [{
+                max: 20,
+                rate: 1500
+            }, {
+                max: 200,
+                rate: 1200
+            }, {
+                max: 600,
+                rate: 1100
+            }, {
+                max: 1000,
+                rate: 1050
+            }];
+
+            document.getElementById('questionsContainer').innerHTML = q.map( (question, i) => `<div class="question-item"><span class="question-text">${i + 1}. ${question}</span><select id="q${i}" class="question-select"><option value="1">Sì</option><option value="0">No</option></select></div>`).join('');
+
+            function calc() {
+                const power = +document.getElementById('power').value || 0;
+                const expense = +document.getElementById('expense').value || 0;
+                const reqs = q.map( (_, i) => document.getElementById(`q${i}`).value === '1');
+                const errors = [];
+
+                if (power <= 0 || power > 1000)
+                    errors.push('La potenza deve essere compresa tra 1 e 1000 kW');
+                if (expense < 0)
+                    errors.push('La spesa non può essere negativa');
+                if (reqs.includes(false))
+                    errors.push('Tutti i requisiti devono essere soddisfatti per accedere al contributo');
+
+                if (errors.length > 0) {
+                    show(false, `<div class="result-value">Accesso NON consentito</div><ul>${errors.map(e => `<li>${e}</li>`).join('')}</ul>`);
+                    return;
+                }
+
+                const tier = t.find(x => power <= x.max) || t[t.length - 1];
+                const maxByPower = tier.rate * power;
+                const maxByExpense = 0.4 * expense;
+                const contribution = Math.min(maxByPower, maxByExpense);
+
+                const fmt = (n) => new Intl.NumberFormat('it-IT',{
+                    style: 'currency',
+                    currency: 'EUR',
+                    minimumFractionDigits: 2
+                }).format(n);
+                const fmtn = (n) => new Intl.NumberFormat('it-IT',{
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(n);
+
+                show(true, `<div class="result-value">Contributo: ${fmt(contribution)}</div><div>Potenza: ${fmtn(power)} kW</div><div>Spesa sostenuta: ${fmt(expense)}</div>`, `<div class="detail-line"><span>Massimale per potenza:</span><span>${fmt(maxByPower)}</span></div><div class="detail-line"><span>• Potenza × Tasso (${fmtn(power)} kW × ${fmt(tier.rate)}/kW):</span><span>${fmt(maxByPower)}</span></div><div class="detail-line"><span>Massimale per spesa (40%):</span><span>${fmt(maxByExpense)}</span></div>`);
+            }
+
+            function show(success, content, details) {
+                const c = document.getElementById('resultContainer');
+                const cd = document.getElementById('resultContent');
+                const dd = document.getElementById('calculationDetails');
+                const tb = document.getElementById('detailsToggle');
+
+                c.className = `result-container ${success ? 'result-success' : 'result-error'}`;
+                c.style.display = 'block';
+                cd.innerHTML = content;
+
+                if (details && success) {
+                    dd.innerHTML = details;
+                    tb.style.display = 'block';
+                } else {
+                    tb.style.display = 'none';
+                    dd.style.display = 'none';
+                    t.textContent = 'Mostra dettagli calcolo';
+                }
+            }
+
+            function toggle() {
+                const d = document.getElementById('calculationDetails');
+                const t = document.getElementById('detailsToggle');
+                if (d.style.display === 'none' || !d.style.display) {
+                    d.style.display = 'block';
+                    t.textContent = 'Nascondi dettagli calcolo';
+                } else {
+                    d.style.display = 'none';
+                    t.textContent = 'Mostra dettagli calcolo';
+                }
+            }
+        </script>
+    </body>
+</html>
